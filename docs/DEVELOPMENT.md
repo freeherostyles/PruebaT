@@ -95,16 +95,23 @@ Ambos seeds son idempotentes.
 
 ## Test
 
-Unitarios:
+Backend unitarios:
 
 ```bash
 cd backend && npm run test
 ```
 
-E2e:
+Backend E2e:
 
 ```bash
 cd backend && npm run test:e2e
+```
+
+Frontend:
+
+```bash
+cd frontend && npm run test        # una vez
+cd frontend && npm run test:watch  # modo watch
 ```
 
 ## Suppliers
@@ -159,6 +166,74 @@ Los proveedores se eliminan con soft delete (`deleted_at`). Las consultas excluy
 | 403 | Rol sin permiso |
 | 404 | No encontrado |
 | 409 | RFC duplicado |
+
+## Proveedores (Frontend)
+
+### Estructura
+
+```
+src/features/suppliers/
+  api/            # Llamadas a la API (axios)
+  components/     # Componentes reutilizables
+  config/         # Configuracion de columnas del DataGrid
+  dialogs/        # Dialog de detalle
+  hooks/          # Hooks de React Query y estado
+  pages/          # SuppliersPage (< 150 lineas)
+  store/          # Zustand para filtros locales
+  types/          # Tipos TypeScript
+  utils/          # Query keys centralizadas
+```
+
+### Data Grid
+
+Se usa `@mui/x-data-grid` (Community). Caracteristicas:
+
+- Paginacion servidor (page, limit, total)
+- Sorting servidor (sortBy, sortOrder)
+- PlaceholderData para evitar parpadeo al cambiar pagina
+- Skeletons en cards y tabla
+- Columnas desacopladas en `config/supplier-columns.tsx`
+
+### Query Keys
+
+Centralizadas en `utils/supplier-query-keys.ts`:
+
+```typescript
+supplierKeys.all          // ['suppliers']
+supplierKeys.list(filters) // ['suppliers', 'list', { page, limit, ... }]
+supplierKeys.detail(id)    // ['suppliers', 'detail', id]
+supplierKeys.stats()       // ['suppliers', 'stats']
+```
+
+### Filtros
+
+Sincronizados con React Query via Zustand:
+
+- Busqueda con debounce (400ms)
+- Tipo (Todos / Persona Fisica / Persona Moral)
+- Estado (Todos / Activo / Inactivo)
+- Orden (Fecha / RFC, ASC/DESC)
+- Boton "Limpiar" cuando hay filtros activos
+
+### Componentes creados
+
+| Componente | Uso |
+|---|---|
+| `StatusChip` | Estado activo/inactivo |
+| `SupplierTypeChip` | Tipo persona fisica/moral |
+| `SearchBar` | Input con debounce |
+| `LoadingState` | Skeletons para tabla |
+| `EmptyState` | Mensaje sin datos |
+| `ErrorState` | Error con reintentar |
+| `SupplierStatsCards` | 5 cards con metricas |
+| `SupplierToolbar` | Filtros + busqueda |
+| `SupplierGrid` | DataGrid configurado |
+| `ErrorBoundary` | Captura errores de render |
+
+### Roles
+
+- **ADMIN**: ve todo, botones de accion marcados como "Proximamente"
+- **EXECUTIVE**: solo listado y detalle, sin acciones administrativas
 
 ## Swagger
 

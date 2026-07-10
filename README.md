@@ -81,15 +81,15 @@ Endpoints:
 
 Usuarios de desarrollo:
 
-- `admin@providers.local`
-- `executive@providers.local`
+- `admin@providers.local` / `password123` (ADMIN)
+- `executive@providers.local` / `password123` (EXECUTIVE)
 
 Ejemplo de login:
 
 ```bash
 curl -X POST http://localhost:3187/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@providers.local","password":"change_admin_password"}'
+  -d '{"email":"admin@providers.local","password":"password123"}'
 ```
 
 En Swagger, primero haces login y luego pegas el token en `Authorize` como `Bearer <token>`.
@@ -133,6 +133,7 @@ cd frontend
 npm run dev
 npm run build
 npm run lint
+npm run test
 ```
 
 ## pgAdmin
@@ -170,8 +171,9 @@ Conexion a PostgreSQL:
 - ✅ Fase 1 cerrada
 - ✅ Fase 2 autenticacion y autorizacion base
 - ✅ Fase 3 gestion de proveedores
-- ⬜ Fase 4 frontend completo
-- ⬜ Fase 5 pruebas y entrega final
+- ✅ Fase 4 frontend (autenticacion, layout, dashboard)
+- ✅ Fase 5A frontend (listado de proveedores con DataGrid, filtros, busqueda, paginacion, detalle)
+- ⬜ Fase 5B frontend (crear, editar, eliminar, cambio de estatus)
 
 ## Nota sobre Docker Rootless
 
