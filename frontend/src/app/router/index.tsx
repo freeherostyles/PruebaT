@@ -1,10 +1,27 @@
-import { Route, Routes } from 'react-router-dom';
-import { InfrastructureStatusPage } from '../../features/dashboard/pages/infrastructure-status-page';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { AuthBootstrap } from '../auth-bootstrap';
+import { MainLayout } from '../layout/main-layout';
+import { PublicRoute } from './guards';
+import { PrivateRoute } from './guards';
+import { LoginPage } from '../../features/auth/pages/login-page';
+import { DashboardPage } from '../../features/dashboard/pages/dashboard-page';
 
 export function AppRouter() {
   return (
-    <Routes>
-      <Route path="/" element={<InfrastructureStatusPage />} />
-    </Routes>
+    <AuthBootstrap>
+      <Routes>
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        <Route element={<PrivateRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </AuthBootstrap>
   );
 }
