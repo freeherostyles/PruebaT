@@ -41,7 +41,7 @@ export function MainLayout() {
 
   const navItems = [
     { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-    { label: 'Proveedores', icon: <BusinessIcon />, path: '/suppliers', disabled: true },
+    { label: 'Proveedores', icon: <BusinessIcon />, path: '/suppliers' },
   ];
 
   const drawerContent = (
@@ -53,10 +53,9 @@ export function MainLayout() {
       </Toolbar>
       <List sx={{ flex: 1, px: 1 }}>
         {navItems.map((item) => (
-          <ListItemButton
+            <ListItemButton
             key={item.path}
             selected={location.pathname === item.path}
-            disabled={item.disabled}
             onClick={() => {
               navigate(item.path);
               if (isMobile) setMobileOpen(false);
@@ -69,13 +68,9 @@ export function MainLayout() {
               slotProps={{
                 primary: {
                   variant: 'body2',
-                  sx: item.disabled ? { color: 'text.disabled' } : undefined,
                 },
               }}
             />
-            {item.disabled && (
-              <Chip label="próximamente" size="small" variant="outlined" sx={{ height: 20, fontSize: 10 }} />
-            )}
           </ListItemButton>
         ))}
       </List>

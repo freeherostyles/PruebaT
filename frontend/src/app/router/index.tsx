@@ -5,6 +5,7 @@ import { PublicRoute } from './guards';
 import { PrivateRoute } from './guards';
 import { LoginPage } from '../../features/auth/pages/login-page';
 import { DashboardPage } from '../../features/dashboard/pages/dashboard-page';
+import { SuppliersPage } from '../../features/suppliers/pages/suppliers-page';
 
 export function AppRouter() {
   return (
@@ -17,6 +18,7 @@ export function AppRouter() {
         <Route element={<PrivateRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/suppliers" element={<SuppliersPage />} />
           </Route>
         </Route>
 

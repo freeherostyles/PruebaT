@@ -16,7 +16,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
-import { useSupplierStats } from '../hooks/use-stats';
+import { useSupplierStats } from '../../suppliers/hooks/use-supplier-stats';
 import { useAuthStore } from '../../auth/store/auth.store';
 
 interface StatCardProps {

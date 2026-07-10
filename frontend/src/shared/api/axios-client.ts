@@ -18,6 +18,7 @@ axiosClient.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
     } catch {
+      // Token parsing failed, will proceed without auth header
     }
   }
   return config;
