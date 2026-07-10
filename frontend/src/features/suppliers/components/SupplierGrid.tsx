@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { DataGrid, type GridRowParams, type GridSortModel } from '@mui/x-data-grid';
-import type { Supplier } from '../types/supplier';
+import {
+  DataGrid,
+  type GridRowParams,
+  type GridSortModel,
+} from '@mui/x-data-grid';
+import type { Supplier, SupplierStatus } from '../types/supplier';
 import { createSupplierColumns } from '../config/supplier-columns';
 import { useAuthStore } from '../../auth/store/auth.store';
 
@@ -16,6 +20,9 @@ interface SupplierGridProps {
   onLimitChange: (limit: number) => void;
   onSortChange: (sortBy: string, sortOrder: 'ASC' | 'DESC') => void;
   onRowClick: (id: string) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
+  onToggleStatus: (id: string, status: SupplierStatus) => void;
 }
 
 export function SupplierGrid({
@@ -30,16 +37,30 @@ export function SupplierGrid({
   onLimitChange,
   onSortChange,
   onRowClick,
+  onEdit,
+  onDelete,
+  onToggleStatus,
 }: SupplierGridProps) {
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.role === 'ADMIN';
 
-  const columns = useMemo(() => createSupplierColumns(isAdmin), [isAdmin]);
+  const actions = useMemo(
+    () => ({ onView: onRowClick, onEdit, onDelete, onToggleStatus }),
+    [onRowClick, onEdit, onDelete, onToggleStatus],
+  );
+
+  const columns = useMemo(
+    () => createSupplierColumns(isAdmin, actions),
+    [isAdmin, actions],
+  );
 
   const handleSortModelChange = useCallback(
     (model: GridSortModel) => {
       if (model.length > 0) {
-        onSortChange(model[0].field, model[0].sort === 'asc' ? 'ASC' : 'DESC');
+        onSortChange(
+          model[0].field,
+          model[0].sort === 'asc' ? 'ASC' : 'DESC',
+        );
       }
     },
     [onSortChange],
@@ -53,7 +74,9 @@ export function SupplierGrid({
   );
 
   const sortModel = useMemo(
-    () => [{ field: sortBy, sort: sortOrder.toLowerCase() as 'asc' | 'desc' }],
+    () => [
+      { field: sortBy, sort: sortOrder.toLowerCase() as 'asc' | 'desc' },
+    ],
     [sortBy, sortOrder],
   );
 
@@ -87,7 +110,10 @@ export function SupplierGrid({
         borderRadius: 2,
         '& .MuiDataGrid-cell:focus': { outline: 'none' },
         '& .MuiDataGrid-row': { cursor: 'pointer' },
-        '& .MuiDataGrid-footerContainer': { borderTop: '1px solid', borderColor: 'divider' },
+        '& .MuiDataGrid-footerContainer': {
+          borderTop: '1px solid',
+          borderColor: 'divider',
+        },
       }}
     />
   );

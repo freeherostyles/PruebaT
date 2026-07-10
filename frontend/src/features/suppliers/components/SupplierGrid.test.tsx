@@ -57,6 +57,9 @@ describe('SupplierGrid', () => {
     onLimitChange: vi.fn(),
     onSortChange: vi.fn(),
     onRowClick: vi.fn(),
+    onEdit: vi.fn(),
+    onDelete: vi.fn(),
+    onToggleStatus: vi.fn(),
   };
 
   it('renders supplier data', () => {

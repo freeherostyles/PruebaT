@@ -1,9 +1,24 @@
+import { IconButton, Stack, Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import BlockIcon from '@mui/icons-material/Block';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import type { GridColDef } from '@mui/x-data-grid';
-import { StatusChip } from '../components/StatusChip';
+import { StatusChip } from '../../../shared/components/StatusChip';
 import { SupplierTypeChip } from '../components/SupplierTypeChip';
+import type { Supplier, SupplierStatus } from '../types/supplier';
+
+interface ActionHandlers {
+  onView: (id: string) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
+  onToggleStatus: (id: string, status: SupplierStatus) => void;
+}
 
 export function createSupplierColumns(
-  _isAdmin: boolean,
+  isAdmin: boolean,
+  actions?: ActionHandlers,
 ): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -68,9 +83,76 @@ export function createSupplierColumns(
     {
       field: 'actions',
       headerName: 'Acciones',
-      width: 120,
+      width: isAdmin ? 200 : 80,
       sortable: false,
-      renderCell: () => null,
+      renderCell: (params) => {
+        const row = params.row as Supplier;
+        return (
+          <Stack direction="row" spacing={0.5}>
+            <Tooltip title="Ver detalle">
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  actions?.onView(row.id);
+                }}
+                aria-label="Ver detalle"
+              >
+                <VisibilityIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {isAdmin && (
+              <>
+                <Tooltip title="Editar">
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      actions?.onEdit(row.id);
+                    }}
+                    aria-label="Editar"
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={row.status === 'ACTIVE' ? 'Desactivar' : 'Activar'}>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      actions?.onToggleStatus(
+                        row.id,
+                        row.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE',
+                      );
+                    }}
+                    aria-label={row.status === 'ACTIVE' ? 'Desactivar' : 'Activar'}
+                    color={row.status === 'ACTIVE' ? 'warning' : 'success'}
+                  >
+                    {row.status === 'ACTIVE' ? (
+                      <BlockIcon fontSize="small" />
+                    ) : (
+                      <CheckCircleIcon fontSize="small" />
+                    )}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Eliminar">
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      actions?.onDelete(row.id);
+                    }}
+                    aria-label="Eliminar"
+                    color="error"
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
+          </Stack>
+        );
+      },
     },
   ];
 
