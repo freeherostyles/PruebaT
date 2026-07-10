@@ -1,0 +1,15 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Providers PostgreSQL",
+      "Group": "Servers",
+      "Host": "providers-postgres",
+      "Port": 5432,
+      "MaintenanceDB": "providers_db",
+      "Username": "providers_user",
+      "ConnectionParameters": {
+        "sslmode": "prefer"
+      }
+    }
+  }
+}

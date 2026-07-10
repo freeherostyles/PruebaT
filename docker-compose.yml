@@ -89,6 +89,31 @@ services:
     networks:
       - providers-network
 
+  providers-pgadmin:
+    image: dpage/pgadmin4:9.16
+    container_name: providers-pgadmin
+    restart: unless-stopped
+    profiles:
+      - tools
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_DISABLE_POSTFIX: 'True'
+      PGADMIN_LISTEN_PORT: '5050'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+      PGADMIN_CONFIG_ALLOW_SPECIAL_EMAIL_DOMAINS: "['local']"
+      PGADMIN_REPLACE_SERVERS_ON_STARTUP: 'True'
+    ports:
+      - '5057:5050'
+    volumes:
+      - providers-pgadmin-data:/var/lib/pgadmin
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      providers-postgres:
+        condition: service_healthy
+    networks:
+      - providers-network
+
 volumes:
   providers-postgres-data:
     name: providers-postgres-data
@@ -96,6 +121,8 @@ volumes:
     name: providers-backend-node-modules
   providers-frontend-node-modules:
     name: providers-frontend-node-modules
+  providers-pgadmin-data:
+    name: providers-pgadmin-data
 
 networks:
   providers-network:

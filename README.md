@@ -72,6 +72,7 @@ POSTGRES_PASSWORD=providers_password
 | Swagger | `http://localhost:3187/api/docs` |
 | Health | `http://localhost:3187/api/health` |
 | PostgreSQL | `localhost:5547` |
+| pgAdmin | `http://localhost:5057` |
 
 ## Auth rapido
 
@@ -116,6 +117,36 @@ npm run dev
 npm run build
 npm run lint
 ```
+
+## pgAdmin
+
+Es opcional y no arranca con `docker compose up -d`.
+
+Iniciar:
+
+```bash
+docker compose --profile tools up -d
+```
+
+Detener:
+
+```bash
+docker compose --profile tools down
+```
+
+Acceso:
+
+```text
+http://localhost:5057
+```
+
+Conexion a PostgreSQL:
+
+- Host: `providers-postgres`
+- Port: `5432`
+- Database: `providers_db`
+- Username: `providers_user`
+- Password: `providers_password`
 
 ## Estado del proyecto
 

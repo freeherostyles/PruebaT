@@ -155,6 +155,32 @@ En un equipo normal no deberia hacer falta.
 
 ## pgAdmin
 
-No se agrego.
+Herramienta opcional para inspeccionar PostgreSQL.
 
-Se dejo fuera porque es opcional y no aporta nada al cierre funcional de la Fase 2.
+Iniciar:
+
+```bash
+docker compose --profile tools up -d
+```
+
+Detener:
+
+```bash
+docker compose --profile tools down
+```
+
+Acceso:
+
+```text
+http://localhost:5057
+```
+
+Conexion:
+
+- Host: `providers-postgres`
+- Port: `5432`
+- Database: `providers_db`
+- Username: `providers_user`
+- Password: `providers_password`
+
+No es un requisito del proyecto. Solo queda como herramienta de desarrollo.
