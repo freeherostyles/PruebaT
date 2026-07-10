@@ -1,5 +1,12 @@
 import { axiosClient } from '../../../shared/api/axios-client';
-import type { SupplierListResponse, SupplierStats, Supplier } from '../types/supplier';
+import type {
+  SupplierListResponse,
+  SupplierStats,
+  Supplier,
+  CreateSupplierPayload,
+  UpdateSupplierPayload,
+  SupplierStatus,
+} from '../types/supplier';
 
 export async function getSuppliersApi(
   params: Record<string, string | number | undefined>,
@@ -23,5 +30,38 @@ export async function getSupplierStatsApi(): Promise<SupplierStats> {
 
 export async function getSupplierByIdApi(id: string): Promise<Supplier> {
   const { data } = await axiosClient.get<Supplier>(`/suppliers/${id}`);
+  return data;
+}
+
+export async function createSupplierApi(
+  payload: CreateSupplierPayload,
+): Promise<Supplier> {
+  const { data } = await axiosClient.post<Supplier>('/suppliers', payload);
+  return data;
+}
+
+export async function updateSupplierApi(
+  id: string,
+  payload: UpdateSupplierPayload,
+): Promise<Supplier> {
+  const { data } = await axiosClient.patch<Supplier>(
+    `/suppliers/${id}`,
+    payload,
+  );
+  return data;
+}
+
+export async function deleteSupplierApi(id: string): Promise<void> {
+  await axiosClient.delete(`/suppliers/${id}`);
+}
+
+export async function changeSupplierStatusApi(
+  id: string,
+  status: SupplierStatus,
+): Promise<Supplier> {
+  const { data } = await axiosClient.patch<Supplier>(
+    `/suppliers/${id}/status`,
+    { status },
+  );
   return data;
 }

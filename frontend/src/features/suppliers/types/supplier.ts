@@ -55,3 +55,30 @@ export interface SupplierFilters {
   page: number;
   limit: number;
 }
+
+export interface CreateSupplierPayload {
+  supplierType: SupplierType;
+  firstName?: string;
+  lastName?: string;
+  secondLastName?: string;
+  businessName?: string;
+  tradeName?: string;
+  rfc: string;
+  curp?: string;
+  contactPerson?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface UpdateSupplierPayload {
+  firstName?: string | null;
+  lastName?: string | null;
+  secondLastName?: string | null;
+  businessName?: string | null;
+  tradeName?: string | null;
+  rfc?: string;
+  curp?: string | null;
+  contactPerson?: string | null;
+  email?: string | null;
+  phone?: string | null;
+}
