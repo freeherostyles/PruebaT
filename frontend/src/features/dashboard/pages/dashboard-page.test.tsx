@@ -3,10 +3,10 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DashboardPage } from './dashboard-page';
 import { useAuthStore } from '../../auth/store/auth.store';
-import { getSupplierStatsApi } from '../api/stats.api';
+import { getSupplierStatsApi } from '../../suppliers/api/supplier.api';
 import type { Mock } from 'vitest';
 
-vi.mock('../api/stats.api');
+vi.mock('../../suppliers/api/supplier.api');
 
 const mockGetStats = getSupplierStatsApi as Mock;
 
