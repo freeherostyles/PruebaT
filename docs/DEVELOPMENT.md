@@ -232,8 +232,60 @@ Sincronizados con React Query via Zustand:
 
 ### Roles
 
-- **ADMIN**: ve todo, botones de accion marcados como "Proximamente"
+- **ADMIN**: CRUD completo (crear, editar, eliminar, cambiar estado, ver detalle)
 - **EXECUTIVE**: solo listado y detalle, sin acciones administrativas
+
+### CRUD visual
+
+| Accion | Dialog | Mutation | Endpoint |
+|---|---|---|---|
+| Crear | `CreateSupplierDialog` | `useCreateSupplier` | POST `/api/suppliers` |
+| Editar | `EditSupplierDialog` | `useUpdateSupplier` | PATCH `/api/suppliers/:id` |
+| Eliminar | `ConfirmDialog` | `useDeleteSupplier` | DELETE `/api/suppliers/:id` |
+| Cambiar estado | `ConfirmDialog` | `useChangeSupplierStatus` | PATCH `/api/suppliers/:id/status` |
+
+### Formulario
+
+Un solo `SupplierForm` reutilizable que renderiza:
+
+- `PhysicalSupplierFields` cuando supplierType = PERSONA_FISICA
+- `CompanySupplierFields` cuando supplierType = PERSONA_MORAL
+
+Integrado con React Hook Form (Controller, watch, reset, setValue).
+
+### ConfirmDialog
+
+Componente reutilizable en `shared/components/ConfirmDialog.tsx`.
+
+Props: title, description, confirmLabel, cancelLabel, loading, onConfirm, onCancel.
+
+Se usa para:
+
+- Confirmar eliminacion
+- Confirmar cambio de estado
+- Confirmar salida del formulario con cambios sin guardar (unsaved changes)
+
+### Toasts
+
+Se usa `notistack` (SnackbarProvider). Mensajes de exito y error en todas las mutations.
+
+Mensajes:
+
+- "Proveedor creado correctamente."
+- "Proveedor actualizado correctamente."
+- "Proveedor eliminado correctamente."
+- "Estado actualizado correctamente."
+- "Error al crear/actualizar/eliminar proveedor."
+
+### Componentes compartidos
+
+Movidos a `shared/components/`:
+
+- `StatusChip`
+- `LoadingState`
+- `EmptyState`
+- `ErrorState`
+- `ConfirmDialog`
 
 ## Swagger
 

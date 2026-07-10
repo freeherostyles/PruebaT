@@ -173,7 +173,7 @@ Conexion a PostgreSQL:
 - ✅ Fase 3 gestion de proveedores
 - ✅ Fase 4 frontend (autenticacion, layout, dashboard)
 - ✅ Fase 5A frontend (listado de proveedores con DataGrid, filtros, busqueda, paginacion, detalle)
-- ⬜ Fase 5B frontend (crear, editar, eliminar, cambio de estatus)
+- ✅ Fase 5B frontend (CRUD visual completo: crear, editar, eliminar, cambio de estatus)
 
 ## Nota sobre Docker Rootless
 
