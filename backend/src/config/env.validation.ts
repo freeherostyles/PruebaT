@@ -18,6 +18,15 @@ function parsePort(value: string, key: string): number {
   return parsed;
 }
 
+function parsePositiveInteger(value: string, key: string): number {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error(`Environment variable ${key} must be a positive integer`);
+  }
+
+  return parsed;
+}
+
 export function validateEnv(env: EnvVars): EnvVars {
   parsePort(requireValue(env, 'PORT'), 'PORT');
   requireValue(env, 'FRONTEND_URL');
@@ -28,6 +37,10 @@ export function validateEnv(env: EnvVars): EnvVars {
   requireValue(env, 'DB_PASSWORD');
   requireValue(env, 'JWT_SECRET');
   requireValue(env, 'JWT_EXPIRES_IN');
+  parsePositiveInteger(
+    requireValue(env, 'BCRYPT_SALT_ROUNDS'),
+    'BCRYPT_SALT_ROUNDS',
+  );
 
   return env;
 }

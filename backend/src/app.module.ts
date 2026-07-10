@@ -6,7 +6,9 @@ import authConfig from './config/auth.config';
 import databaseConfig from './config/database.config';
 import { validateEnv } from './config/env.validation';
 import { getTypeOrmOptions } from './database/typeorm.config';
+import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { HealthModule } from './modules/health/health.module';
       useFactory: (configService: ConfigService) =>
         getTypeOrmOptions(configService),
     }),
+    AuthModule,
     HealthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

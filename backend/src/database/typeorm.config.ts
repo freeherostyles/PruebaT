@@ -2,6 +2,8 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
+const isTsRuntime = __filename.endsWith('.ts');
+
 export function getTypeOrmOptions(
   configService?: ConfigService,
 ): TypeOrmModuleOptions {
@@ -34,8 +36,10 @@ export function getTypeOrmOptions(
 
 const dataSourceOptions: DataSourceOptions = {
   ...(getTypeOrmOptions() as DataSourceOptions),
-  entities: ['src/**/*.entity.ts', 'dist/**/*.entity.js'],
-  migrations: ['src/database/migrations/*.ts', 'dist/database/migrations/*.js'],
+  entities: isTsRuntime ? ['src/**/*.entity.ts'] : ['dist/**/*.entity.js'],
+  migrations: isTsRuntime
+    ? ['src/database/migrations/*.ts']
+    : ['dist/database/migrations/*.js'],
 };
 
 export default new DataSource(dataSourceOptions);
