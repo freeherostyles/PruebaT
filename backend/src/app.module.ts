@@ -8,6 +8,7 @@ import { validateEnv } from './config/env.validation';
 import { getTypeOrmOptions } from './database/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
+import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -25,6 +26,7 @@ import { UsersModule } from './modules/users/users.module';
     }),
     AuthModule,
     HealthModule,
+    SuppliersModule,
     UsersModule,
   ],
 })

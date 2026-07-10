@@ -20,6 +20,7 @@
     "migration:run": "typeorm-ts-node-commonjs migration:run -d src/database/typeorm.config.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/typeorm.config.ts",
     "seed:users": "ts-node -r tsconfig-paths/register src/database/seeds/seed-users.ts",
+    "seed:suppliers": "ts-node -r tsconfig-paths/register src/database/seeds/seed-suppliers.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
