@@ -1,0 +1,100 @@
+services:
+  providers-postgres:
+    image: providers-postgres:dev
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+    container_name: providers-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '5547:5432'
+    volumes:
+      - providers-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - providers-network
+
+  providers-backend:
+    image: providers-backend:dev
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: providers-backend
+    restart: unless-stopped
+    environment:
+      PORT: ${PORT}
+      FRONTEND_URL: ${FRONTEND_URL}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      WATCHPACK_POLLING: 'true'
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - '3187:3187'
+    volumes:
+      - ./backend:/app
+      - providers-backend-node-modules:/app/node_modules
+    depends_on:
+      providers-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q -O - http://localhost:3187/api/health > /dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - providers-network
+
+  providers-frontend:
+    image: providers-frontend:dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: providers-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - '4178:4178'
+    volumes:
+      - ./frontend:/app
+      - providers-frontend-node-modules:/app/node_modules
+    depends_on:
+      providers-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q --spider http://localhost:4178 || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - providers-network
+
+volumes:
+  providers-postgres-data:
+    name: providers-postgres-data
+  providers-backend-node-modules:
+    name: providers-backend-node-modules
+  providers-frontend-node-modules:
+    name: providers-frontend-node-modules
+
+networks:
+  providers-network:
+    name: providers-network
+    driver: bridge
