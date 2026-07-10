@@ -9,7 +9,9 @@ Prueba tecnica Full Stack para gestion de proveedores.
 - PostgreSQL en Docker
 - Compose listo para levantar todo con un solo comando
 
-La parte funcional todavia no esta implementada. Autenticacion, usuarios, proveedores y reglas de negocio arrancan en las siguientes fases.
+Ahora mismo ya existe la base de autenticacion en backend: usuarios, login con JWT y `/api/auth/profile`.
+
+Todavia faltan proveedores y el frontend funcional.
 
 ## Stack
 
@@ -52,6 +54,9 @@ DB_PORT=5432
 DB_NAME=providers_db
 DB_USER=providers_user
 DB_PASSWORD=providers_password
+BCRYPT_SALT_ROUNDS=10
+DEV_ADMIN_PASSWORD=change_admin_password
+DEV_EXECUTIVE_PASSWORD=change_executive_password
 VITE_API_URL=http://localhost:3187/api
 POSTGRES_DB=providers_db
 POSTGRES_USER=providers_user
@@ -68,6 +73,28 @@ POSTGRES_PASSWORD=providers_password
 | Health | `http://localhost:3187/api/health` |
 | PostgreSQL | `localhost:5547` |
 
+## Auth rapido
+
+Endpoints:
+
+- `POST /api/auth/login`
+- `GET /api/auth/profile`
+
+Usuarios de desarrollo:
+
+- `admin@providers.local`
+- `executive@providers.local`
+
+Ejemplo de login:
+
+```bash
+curl -X POST http://localhost:3187/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@providers.local","password":"change_admin_password"}'
+```
+
+En Swagger, primero haces login y luego pegas el token en `Authorize` como `Bearer <token>`.
+
 ## Scripts utiles
 
 Backend:
@@ -78,6 +105,7 @@ npm run start:dev
 npm run build
 npm run lint
 npm run migration:run
+npm run seed:users
 ```
 
 Frontend:
@@ -92,8 +120,8 @@ npm run lint
 ## Estado del proyecto
 
 - ✅ Fase 1 cerrada
-- ⬜ Fase 2 autenticacion
-- ⬜ Fase 3 usuarios
+- ✅ Fase 2 autenticacion y autorizacion base
+- ⬜ Fase 3 users
 - ⬜ Fase 4 suppliers
 - ⬜ Fase 5 frontend completo
 - ⬜ Fase 6 pruebas

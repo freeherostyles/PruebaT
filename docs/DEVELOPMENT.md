@@ -79,6 +79,40 @@ Revertir:
 docker compose exec providers-backend npm run migration:revert
 ```
 
+Seed de usuarios:
+
+```bash
+docker compose exec providers-backend npm run seed:users
+```
+
+El seed es idempotente. Puedes correrlo varias veces y no duplica usuarios.
+
+## Auth
+
+Endpoints:
+
+- `POST /api/auth/login`
+- `GET /api/auth/profile`
+
+Usuarios de desarrollo:
+
+- `admin@providers.local`
+- `executive@providers.local`
+
+Ejemplo de login:
+
+```bash
+curl -X POST http://localhost:3187/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@providers.local","password":"change_admin_password"}'
+```
+
+Para usar rutas protegidas desde Swagger:
+
+1. haces login;
+2. copias `accessToken`;
+3. lo pegas en `Authorize` como `Bearer <token>`.
+
 ## Swagger
 
 ```text
@@ -118,3 +152,9 @@ docker context show
 ```
 
 En un equipo normal no deberia hacer falta.
+
+## pgAdmin
+
+No se agrego.
+
+Se dejo fuera porque es opcional y no aporta nada al cierre funcional de la Fase 2.
