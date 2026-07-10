@@ -16,10 +16,24 @@ flowchart LR
 ```text
 backend/
 ├── src/
+│   ├── common/
+│   │   ├── decorators/
+│   │   └── guards/
 │   ├── config/
 │   ├── database/
+│   │   ├── migrations/
+│   │   └── seeds/
 │   ├── modules/
-│   │   └── health/
+│   │   ├── auth/
+│   │   ├── health/
+│   │   ├── suppliers/
+│   │   │   ├── commands/
+│   │   │   │   └── handlers/
+│   │   │   ├── dto/
+│   │   │   ├── queries/
+│   │   │   │   └── handlers/
+│   │   │   └── strategies/
+│   │   └── users/
 │   ├── app.module.ts
 │   └── main.ts
 ```
@@ -28,7 +42,10 @@ Lo que existe hoy:
 
 - configuracion centralizada
 - DataSource de TypeORM
-- modulo health
+- modulos health, auth, users, suppliers
+- CQRS con CommandBus y QueryBus
+- Strategy Pattern para validacion de proveedores
+- JWT auth con guards y roles
 - bootstrap global con CORS, pipes y Swagger
 
 ## Frontend
@@ -85,11 +102,14 @@ sequenceDiagram
 
 ## Estado de la arquitectura
 
-Congelada al cierre de Fase 1.
+Actualizada al cierre de Fase 3.
 
-Todavia no entran:
+Incluye:
 
-- autenticacion
-- usuarios
-- CQRS funcional
-- modulo de proveedores
+- autenticacion JWT con CQRS
+- usuarios con roles ADMIN y EXECUTIVE
+- modulo suppliers con CQRS real
+- Strategy Pattern para validacion por tipo de proveedor
+- soft delete
+- paginacion, busqueda y filtros
+- pruebas unitarias y e2e

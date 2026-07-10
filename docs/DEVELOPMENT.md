@@ -85,33 +85,80 @@ Seed de usuarios:
 docker compose exec providers-backend npm run seed:users
 ```
 
-El seed es idempotente. Puedes correrlo varias veces y no duplica usuarios.
-
-## Auth
-
-Endpoints:
-
-- `POST /api/auth/login`
-- `GET /api/auth/profile`
-
-Usuarios de desarrollo:
-
-- `admin@providers.local`
-- `executive@providers.local`
-
-Ejemplo de login:
+Seed de proveedores (10 registros de prueba):
 
 ```bash
-curl -X POST http://localhost:3187/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@providers.local","password":"change_admin_password"}'
+docker compose exec providers-backend npm run seed:suppliers
 ```
 
-Para usar rutas protegidas desde Swagger:
+Ambos seeds son idempotentes.
 
-1. haces login;
-2. copias `accessToken`;
-3. lo pegas en `Authorize` como `Bearer <token>`.
+## Test
+
+Unitarios:
+
+```bash
+cd backend && npm run test
+```
+
+E2e:
+
+```bash
+cd backend && npm run test:e2e
+```
+
+## Suppliers
+
+Endpoints protegidos por JWT y roles:
+
+| Metodo | Ruta | Roles |
+| --- | --- | --- |
+| POST | `/api/suppliers` | ADMIN |
+| GET | `/api/suppliers` | ADMIN, EXECUTIVE |
+| GET | `/api/suppliers/stats` | ADMIN, EXECUTIVE |
+| GET | `/api/suppliers/:id` | ADMIN, EXECUTIVE |
+| PATCH | `/api/suppliers/:id` | ADMIN |
+| PATCH | `/api/suppliers/:id/status` | ADMIN |
+| DELETE | `/api/suppliers/:id` | ADMIN |
+
+### Tipos de proveedor
+
+- `PERSONA_FISICA` — requiere firstName, lastName, RFC 13 chars
+- `PERSONA_MORAL` — requiere businessName, RFC 12 chars
+
+Estados: `ACTIVE` (default), `INACTIVE`.
+
+### Filtros en listado
+
+`GET /api/suppliers?page=1&limit=10&search=&type=PERSONA_FISICA&status=ACTIVE&sortBy=createdAt&sortOrder=DESC`
+
+Busqueda por RFC, firstName, lastName, secondLastName, businessName, tradeName, email, phone (case-insensitive).
+
+### Strategy Pattern
+
+Cada tipo tiene su propia estrategia de validacion. RFC se valida por formato (13 chars fisica, 12 chars moral), no contra SAT. CURP tambien se valida cuando se proporciona.
+
+### CQRS
+
+Commands: CreateSupplier, UpdateSupplier, ChangeSupplierStatus, DeleteSupplier.
+Queries: GetSupplierById, ListSuppliers, GetSupplierStats.
+
+### Soft delete
+
+Los proveedores se eliminan con soft delete (`deleted_at`). Las consultas excluyen eliminados. RFC es unico globalmente incluso entre eliminados.
+
+### Codigos de respuesta
+
+| Codigo | Significado |
+| --- | --- |
+| 201 | Creado |
+| 200 | OK |
+| 204 | Eliminado |
+| 400 | Validacion |
+| 401 | Sin token |
+| 403 | Rol sin permiso |
+| 404 | No encontrado |
+| 409 | RFC duplicado |
 
 ## Swagger
 

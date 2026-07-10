@@ -9,9 +9,7 @@ Prueba tecnica Full Stack para gestion de proveedores.
 - PostgreSQL en Docker
 - Compose listo para levantar todo con un solo comando
 
-Ahora mismo ya existe la base de autenticacion en backend: usuarios, login con JWT y `/api/auth/profile`.
-
-Todavia faltan proveedores y el frontend funcional.
+Ahora mismo existe autenticacion completa (Fase 2) y el modulo de proveedores (Fase 3): CRUD completo con CQRS, Strategy Pattern, validacion de RFC, soft delete, paginacion y busqueda.
 
 ## Stack
 
@@ -96,6 +94,22 @@ curl -X POST http://localhost:3187/api/auth/login \
 
 En Swagger, primero haces login y luego pegas el token en `Authorize` como `Bearer <token>`.
 
+## Suppliers API
+
+Endpoints protegidos con JWT y roles:
+
+| Metodo | Ruta | Roles |
+| --- | --- | --- |
+| POST | `/api/suppliers` | ADMIN |
+| GET | `/api/suppliers` | ADMIN, EXECUTIVE |
+| GET | `/api/suppliers/stats` | ADMIN, EXECUTIVE |
+| GET | `/api/suppliers/:id` | ADMIN, EXECUTIVE |
+| PATCH | `/api/suppliers/:id` | ADMIN |
+| PATCH | `/api/suppliers/:id/status` | ADMIN |
+| DELETE | `/api/suppliers/:id` | ADMIN |
+
+Filtros en listado: `page`, `limit`, `search`, `type`, `status`, `sortBy`, `sortOrder`.
+
 ## Scripts utiles
 
 Backend:
@@ -107,6 +121,9 @@ npm run build
 npm run lint
 npm run migration:run
 npm run seed:users
+npm run seed:suppliers
+npm run test
+npm run test:e2e
 ```
 
 Frontend:
@@ -152,11 +169,9 @@ Conexion a PostgreSQL:
 
 - ✅ Fase 1 cerrada
 - ✅ Fase 2 autenticacion y autorizacion base
-- ⬜ Fase 3 users
-- ⬜ Fase 4 suppliers
-- ⬜ Fase 5 frontend completo
-- ⬜ Fase 6 pruebas
-- ⬜ Fase 7 entrega final
+- ✅ Fase 3 gestion de proveedores
+- ⬜ Fase 4 frontend completo
+- ⬜ Fase 5 pruebas y entrega final
 
 ## Nota sobre Docker Rootless
 
