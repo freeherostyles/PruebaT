@@ -13,10 +13,7 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { LoginCommand } from './commands/login.command';
 import { AuthProfileResponseDto } from './dto/auth-profile-response.dto';
 import { LoginDto } from './dto/login.dto';
-import {
-  AuthenticatedUserDto,
-  LoginResponseDto,
-} from './dto/login-response.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { UserRole } from '../users/user-role.enum';
 
 @ApiTags('Auth')
@@ -39,7 +36,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Return the authenticated user profile' })
   @ApiResponse({ status: 200, type: AuthProfileResponseDto })
-  profile(@CurrentUser() user: AuthenticatedUserDto) {
+  profile(@CurrentUser() user: AuthProfileResponseDto) {
     return user;
   }
 }
