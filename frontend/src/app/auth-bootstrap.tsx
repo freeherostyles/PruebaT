@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useAuthStore } from '../features/auth/store/auth.store';
-import { useProfile } from '../features/auth/hooks/use-profile';
+import { getProfileApi } from '../features/auth/api/auth.api';
+import type { AxiosError } from 'axios';
 
 export function AuthBootstrap({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((s) => s.token);
@@ -13,7 +15,12 @@ export function AuthBootstrap({ children }: { children: React.ReactNode }) {
 
   const shouldFetch = !!token && !isAuthenticated;
 
-  const { isError } = useProfile(shouldFetch);
+  const { data, isError, error } = useQuery({
+    queryKey: ['auth-profile'],
+    queryFn: getProfileApi,
+    enabled: shouldFetch,
+    retry: false,
+  });
 
   useEffect(() => {
     if (!token) {
@@ -22,19 +29,20 @@ export function AuthBootstrap({ children }: { children: React.ReactNode }) {
   }, [token, setRestoring]);
 
   useEffect(() => {
-    if (isError) {
-      logout();
+    if (isError && error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 401) {
+        logout();
+      }
       setRestoring(false);
     }
-  }, [isError, logout, setRestoring]);
-
-  const profileQuery = useProfile(shouldFetch);
+  }, [isError, error, logout, setRestoring]);
 
   useEffect(() => {
-    if (profileQuery.data && token) {
-      login(token, profileQuery.data);
+    if (data && token) {
+      login(token, data);
     }
-  }, [profileQuery.data, token, login]);
+  }, [data, token, login]);
 
   if (isRestoring) {
     return (
