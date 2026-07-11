@@ -18,24 +18,34 @@ export class GetSupplierStatsQueryHandler implements IQueryHandler<GetSupplierSt
     _query: GetSupplierStatsQuery,
   ): Promise<SupplierStatsResponseDto> {
     void _query;
-    const qb = this.supplierRepo
+    const row = await this.supplierRepo
       .createQueryBuilder('s')
-      .where('s.deleted_at IS NULL');
+      .select('COUNT(s.id)', 'total')
+      .addSelect(
+        `SUM(CASE WHEN s.status = 'ACTIVE' THEN 1 ELSE 0 END)`,
+        'active',
+      )
+      .addSelect(
+        `SUM(CASE WHEN s.status = 'INACTIVE' THEN 1 ELSE 0 END)`,
+        'inactive',
+      )
+      .addSelect(
+        `SUM(CASE WHEN s.supplier_type = 'PERSONA_FISICA' THEN 1 ELSE 0 END)`,
+        'personaFisica',
+      )
+      .addSelect(
+        `SUM(CASE WHEN s.supplier_type = 'PERSONA_MORAL' THEN 1 ELSE 0 END)`,
+        'personaMoral',
+      )
+      .where('s.deleted_at IS NULL')
+      .getRawOne<Record<string, string>>();
 
-    const total = await qb.getCount();
-
-    const active = await qb
-      .clone()
-      .andWhere('s.status = :status', { status: 'ACTIVE' })
-      .getCount();
-    const inactive = total - active;
-
-    const personaFisica = await qb
-      .clone()
-      .andWhere('s.supplier_type = :type', { type: 'PERSONA_FISICA' })
-      .getCount();
-    const personaMoral = total - personaFisica;
-
-    return { total, active, inactive, personaFisica, personaMoral };
+    return {
+      total: Number(row?.total ?? 0),
+      active: Number(row?.active ?? 0),
+      inactive: Number(row?.inactive ?? 0),
+      personaFisica: Number(row?.personaFisica ?? 0),
+      personaMoral: Number(row?.personaMoral ?? 0),
+    };
   }
 }

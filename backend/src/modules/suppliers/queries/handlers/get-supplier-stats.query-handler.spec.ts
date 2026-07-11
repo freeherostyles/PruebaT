@@ -9,14 +9,14 @@ describe('GetSupplierStatsQueryHandler', () => {
   let handler: GetSupplierStatsQueryHandler;
   let supplierRepo: jest.Mocked<Repository<Supplier>>;
 
-  const mockQueryBuilder = () => {
+  const mockQueryBuilder = (rawResult: Record<string, string>) => {
     const qb = {
+      select: jest.fn().mockReturnThis(),
+      addSelect: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
-      getCount: jest.fn(),
-      clone: jest.fn(),
+      getRawOne: jest.fn().mockResolvedValue(rawResult),
     };
-    qb.clone.mockReturnValue(qb);
     return qb;
   };
 
@@ -38,11 +38,13 @@ describe('GetSupplierStatsQueryHandler', () => {
   });
 
   it('returns correct stats', async () => {
-    const qb = mockQueryBuilder();
-    qb.getCount
-      .mockResolvedValueOnce(10) // total
-      .mockResolvedValueOnce(7) // active
-      .mockResolvedValueOnce(6); // personaFisica
+    const qb = mockQueryBuilder({
+      total: '10',
+      active: '7',
+      inactive: '3',
+      personaFisica: '6',
+      personaMoral: '4',
+    });
     supplierRepo.createQueryBuilder.mockReturnValue(qb);
 
     const result = await handler.execute(new GetSupplierStatsQuery());
@@ -57,15 +59,33 @@ describe('GetSupplierStatsQueryHandler', () => {
   });
 
   it('excludes soft deleted records', async () => {
-    const qb = mockQueryBuilder();
-    qb.getCount
-      .mockResolvedValueOnce(0)
-      .mockResolvedValueOnce(0)
-      .mockResolvedValueOnce(0);
+    const qb = mockQueryBuilder({
+      total: '0',
+      active: '0',
+      inactive: '0',
+      personaFisica: '0',
+      personaMoral: '0',
+    });
     supplierRepo.createQueryBuilder.mockReturnValue(qb);
 
     await handler.execute(new GetSupplierStatsQuery());
 
     expect(qb.where).toHaveBeenCalledWith('s.deleted_at IS NULL');
+  });
+
+  it('handles null result from getRawOne', async () => {
+    const qb = mockQueryBuilder(undefined as unknown as Record<string, string>);
+    qb.getRawOne.mockResolvedValue(undefined);
+    supplierRepo.createQueryBuilder.mockReturnValue(qb);
+
+    const result = await handler.execute(new GetSupplierStatsQuery());
+
+    expect(result).toEqual({
+      total: 0,
+      active: 0,
+      inactive: 0,
+      personaFisica: 0,
+      personaMoral: 0,
+    });
   });
 });
