@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { Throttle } from '@nestjs/throttler';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,6 +23,7 @@ export class AuthController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post('login')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Authenticate a user and return a JWT' })
   @ApiResponse({ status: 201, type: LoginResponseDto })
   login(@Body() loginDto: LoginDto) {
