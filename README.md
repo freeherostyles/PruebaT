@@ -13,7 +13,7 @@ Ahora mismo existe autenticacion completa (Fase 2) y el modulo de proveedores (F
 
 ## Stack
 
-- Backend: NestJS, TypeScript, TypeORM, PostgreSQL, Swagger
+- Backend: NestJS, TypeScript, TypeORM, PostgreSQL, Swagger, Helmet, Throttler
 - Frontend: React, TypeScript, Vite, React Router, Axios, Material UI, React Query, Zustand, React Hook Form
 - Infraestructura: Docker, Docker Compose
 
@@ -52,6 +52,8 @@ DB_PORT=5432
 DB_NAME=providers_db
 DB_USER=providers_user
 DB_PASSWORD=providers_password
+JWT_SECRET=change_this_secret
+JWT_EXPIRES_IN=1h
 BCRYPT_SALT_ROUNDS=10
 DEV_ADMIN_PASSWORD=change_admin_password
 DEV_EXECUTIVE_PASSWORD=change_executive_password
@@ -76,7 +78,7 @@ POSTGRES_PASSWORD=providers_password
 
 Endpoints:
 
-- `POST /api/auth/login`
+- `POST /api/auth/login` (rate limited: 5 intentos/minuto)
 - `GET /api/auth/profile`
 
 Usuarios de desarrollo:
@@ -93,6 +95,9 @@ curl -X POST http://localhost:3187/api/auth/login \
 ```
 
 En Swagger, primero haces login y luego pegas el token en `Authorize` como `Bearer <token>`.
+
+> Nota: `JWT_SECRET` es obligatorio. Si no se define en `.env`, el backend falla al iniciar.
+> La variable `JWT_EXPIRES_IN` es opcional (default: `1h`). Swagger se desactiva en producción (`NODE_ENV=production`).
 
 ## Suppliers API
 

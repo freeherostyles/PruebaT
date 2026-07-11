@@ -154,6 +154,15 @@ Queries: GetSupplierById, ListSuppliers, GetSupplierStats.
 
 Los proveedores se eliminan con soft delete (`deleted_at`). Las consultas excluyen eliminados. RFC es unico globalmente incluso entre eliminados.
 
+### Seguridad
+
+- Helmet activado con configuracion por defecto (security headers HTTP)
+- Rate limiting global: 60 requests/minuto por IP
+- Rate limiting en login: 5 intentos/minuto por IP (proteccion brute-force)
+- Swagger desactivado en produccion (`NODE_ENV=production`)
+- `JWT_SECRET` es requerido; el proyecto falla al iniciar si no esta definido
+- CORS limitado al origen del frontend
+
 ### Codigos de respuesta
 
 | Codigo | Significado |
@@ -166,6 +175,7 @@ Los proveedores se eliminan con soft delete (`deleted_at`). Las consultas excluy
 | 403 | Rol sin permiso |
 | 404 | No encontrado |
 | 409 | RFC duplicado |
+| 429 | Demasiadas solicitudes (rate limit) |
 
 ## Proveedores (Frontend)
 
