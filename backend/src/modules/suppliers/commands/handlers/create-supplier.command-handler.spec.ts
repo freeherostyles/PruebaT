@@ -86,7 +86,10 @@ describe('CreateSupplierCommandHandler', () => {
     supplierRepo.findOne.mockResolvedValue({ id: 'existing' } as Supplier);
 
     await expect(
-      handler.execute(new CreateSupplierCommand('user-1', validDto as any)),
+      handler.execute(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        new CreateSupplierCommand('user-1', validDto as any),
+      ),
     ).rejects.toThrow(ConflictException);
   });
 
@@ -95,7 +98,10 @@ describe('CreateSupplierCommandHandler', () => {
     supplierRepo.findOne.mockResolvedValueOnce(null);
 
     await expect(
-      handler.execute(new CreateSupplierCommand('user-1', validDto as any)),
+      handler.execute(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        new CreateSupplierCommand('user-1', validDto as any),
+      ),
     ).rejects.toThrow(NotFoundException);
   });
 });
