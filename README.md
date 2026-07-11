@@ -17,14 +17,48 @@ Ahora mismo existe autenticacion completa (Fase 2) y el modulo de proveedores (F
 - Frontend: React, TypeScript, Vite, React Router, Axios, Material UI, React Query, Zustand, React Hook Form
 - Infraestructura: Docker, Docker Compose
 
+## Requisitos
+
+- Docker Desktop o Docker Engine con Docker Compose disponible
+- Node.js 20.x y npm 10+ si vas a correr backend/frontend fuera de Docker
+- Git
+
 ## Ejecutarlo
+
+1. Clona el repositorio y entra a la carpeta.
 
 ```bash
 git clone <URL_DEL_REPOSITORIO>
-cd providers-app
+cd <NOMBRE_DEL_REPOSITORIO>
+```
+
+2. Crea el archivo `.env` desde `.env.example`.
+
+macOS / Linux:
+
+```bash
 cp .env.example .env
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Windows CMD:
+
+```bat
+copy .env.example .env
+```
+
+3. Levanta la aplicacion.
+
+```bash
 docker compose up --build -d
 ```
+
+Ese flujo deja la base migrada y carga los usuarios/suppliers de desarrollo automaticamente.
 
 Ver estado:
 
@@ -83,15 +117,28 @@ Endpoints:
 
 Usuarios de desarrollo:
 
-- `admin@providers.local` / `password123` (ADMIN)
-- `executive@providers.local` / `password123` (EXECUTIVE)
+- `admin@providers.local` / `change_admin_password` (ADMIN)
+- `executive@providers.local` / `change_executive_password` (EXECUTIVE)
+
+Esas credenciales salen de `.env`. Si cambias `DEV_ADMIN_PASSWORD` o
+`DEV_EXECUTIVE_PASSWORD`, el seed actualiza los usuarios con esos valores en el siguiente arranque.
 
 Ejemplo de login:
+
+macOS / Linux:
 
 ```bash
 curl -X POST http://localhost:3187/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@providers.local","password":"password123"}'
+  -d '{"email":"admin@providers.local","password":"change_admin_password"}'
+```
+
+Windows PowerShell:
+
+```powershell
+Invoke-RestMethod -Method Post -Uri "http://localhost:3187/api/auth/login" `
+  -ContentType "application/json" `
+  -Body '{"email":"admin@providers.local","password":"change_admin_password"}'
 ```
 
 En Swagger, primero haces login y luego pegas el token en `Authorize` como `Bearer <token>`.
@@ -117,10 +164,14 @@ Filtros en listado: `page`, `limit`, `search`, `type`, `status`, `sortBy`, `sort
 
 ## Scripts utiles
 
+Para desarrollo diario, la forma mas simple y portable es usar Docker.
+Los comandos locales de esta seccion son opcionales.
+
 Backend:
 
 ```bash
 cd backend
+npm install
 npm run start:dev
 npm run build
 npm run lint
@@ -131,14 +182,33 @@ npm run test
 npm run test:e2e
 ```
 
+Si corres el backend fuera de Docker, ejecuta `npm run migration:run`,
+`npm run seed:users` y `npm run seed:suppliers` antes de probar login o endpoints protegidos.
+
+Si quieres reutilizar la base que levanta Docker desde tu host, cambia estas variables en `.env`:
+
+```env
+DB_HOST=localhost
+DB_PORT=5547
+```
+
 Frontend:
 
 ```bash
 cd frontend
+npm install
 npm run dev
 npm run build
 npm run lint
 npm run test
+```
+
+Si corres el frontend fuera de Docker, define `VITE_API_URL` antes de arrancarlo.
+
+Ejemplo con archivo `frontend/.env.local`:
+
+```env
+VITE_API_URL=http://localhost:3187/api
 ```
 
 ## pgAdmin
@@ -148,13 +218,14 @@ Es opcional y no arranca con `docker compose up -d`.
 Iniciar:
 
 ```bash
-docker compose --profile tools up -d
+docker compose --profile tools up -d providers-pgadmin
 ```
 
 Detener:
 
 ```bash
-docker compose --profile tools down
+docker compose stop providers-pgadmin
+docker compose rm -f providers-pgadmin
 ```
 
 Acceso:
@@ -195,8 +266,10 @@ docker context show
 
 ## Mas detalle
 
-- `docs/FASE_1.md`
-- `docs/ARCHITECTURE.md`
-- `docs/DECISIONS.md`
-- `docs/DEVELOPMENT.md`
-- `docs/ROADMAP.md`
+- [Indice tecnico](docs/README.md)
+- [Arquitectura](docs/ARCHITECTURE.md)
+- [Decisiones tecnicas](docs/DECISIONS.md)
+- [Guia de desarrollo](docs/DEVELOPMENT.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Documentacion por fases](docs/phases/)
+- [Documentacion por temas](docs/topics/)

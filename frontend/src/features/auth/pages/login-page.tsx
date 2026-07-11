@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -11,7 +12,9 @@ import {
   Typography,
   Alert,
   Divider,
+  Chip,
 } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useLogin } from '../hooks/use-login';
 import type { LoginRequest } from '../types/auth';
 
@@ -22,6 +25,7 @@ export function LoginPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm<LoginRequest>({
     mode: 'onChange',
@@ -42,18 +46,41 @@ export function LoginPage() {
       }}
     >
       <Container maxWidth="sm">
-        <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
-          <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-            <Stack spacing={3}>
-              <Stack spacing={1}>
-                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+        <Card
+          elevation={0}
+          sx={{
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: { xs: 3, md: 4 },
+            overflow: 'hidden',
+          }}
+        >
+          <Box
+            sx={{
+              px: { xs: 3, md: 5 },
+              pt: { xs: 3, md: 4 },
+              pb: 2,
+              background:
+                'linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(124,58,237,0.08) 100%)',
+            }}
+          >
+            <Stack spacing={1.5} sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, textAlign: { sm: 'center' } }}>
+              <Avatar sx={{ bgcolor: 'primary.main', width: 48, height: 48 }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Stack spacing={0.75}>
+                <Typography variant="h4" sx={{ fontWeight: 700, fontSize: { xs: '1.8rem', md: '2.125rem' } }}>
                   Iniciar sesión
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Ingresa tus credenciales para acceder al sistema
+                  Accede al panel de gestión de proveedores con tu perfil asignado.
                 </Typography>
               </Stack>
+            </Stack>
+          </Box>
 
+          <CardContent sx={{ p: { xs: 3, md: 5 } }}>
+            <Stack spacing={3}>
               <form onSubmit={onSubmit}>
                 <Stack spacing={2.5}>
                   <TextField
@@ -124,13 +151,35 @@ export function LoginPage() {
                       {showDevInfo ? 'Ocultar' : 'Mostrar'} credenciales de desarrollo
                     </Typography>
                     {showDevInfo && (
-                      <Stack spacing={0.5}>
-                        <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
-                          ADMIN → admin@providers.local
-                        </Typography>
-                        <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
-                          EXECUTIVE → executive@providers.local
-                        </Typography>
+                      <Stack spacing={1}>
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                          <Chip
+                            label="Entrar como ADMIN"
+                            clickable
+                            onClick={() => {
+                              setValue('email', 'admin@providers.local', { shouldValidate: true });
+                              setValue('password', 'change_admin_password', { shouldValidate: true });
+                            }}
+                            sx={{ justifyContent: 'flex-start' }}
+                          />
+                          <Chip
+                            label="Entrar como EXECUTIVE"
+                            clickable
+                            onClick={() => {
+                              setValue('email', 'executive@providers.local', { shouldValidate: true });
+                              setValue('password', 'change_executive_password', { shouldValidate: true });
+                            }}
+                            sx={{ justifyContent: 'flex-start' }}
+                          />
+                        </Stack>
+                        <Stack spacing={0.5}>
+                          <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+                            ADMIN → admin@providers.local
+                          </Typography>
+                          <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+                            EXECUTIVE → executive@providers.local
+                          </Typography>
+                        </Stack>
                       </Stack>
                     )}
                   </Stack>

@@ -22,65 +22,6 @@ export function createSupplierColumns(
 ): GridColDef[] {
   const columns: GridColDef[] = [
     {
-      field: 'supplierType',
-      headerName: 'Tipo',
-      width: 140,
-      renderCell: (params) => <SupplierTypeChip type={params.value} />,
-      sortable: true,
-    },
-    {
-      field: 'rfc',
-      headerName: 'RFC',
-      width: 150,
-      sortable: true,
-    },
-    {
-      field: 'name',
-      headerName: 'Nombre / Razón Social',
-      flex: 1,
-      minWidth: 200,
-      valueGetter: (_, row) => {
-        if (row.businessName) return row.businessName;
-        return [row.firstName, row.lastName, row.secondLastName]
-          .filter(Boolean)
-          .join(' ');
-      },
-      sortable: false,
-    },
-    {
-      field: 'contactPerson',
-      headerName: 'Contacto',
-      width: 160,
-      sortable: false,
-    },
-    {
-      field: 'email',
-      headerName: 'Email',
-      width: 200,
-      sortable: false,
-    },
-    {
-      field: 'phone',
-      headerName: 'Teléfono',
-      width: 130,
-      sortable: false,
-    },
-    {
-      field: 'status',
-      headerName: 'Estado',
-      width: 110,
-      renderCell: (params) => <StatusChip status={params.value} />,
-      sortable: true,
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Fecha creación',
-      width: 140,
-      type: 'date',
-      valueGetter: (_, row) => new Date(row.createdAt),
-      sortable: true,
-    },
-    {
       field: 'actions',
       headerName: 'Acciones',
       width: isAdmin ? 200 : 80,
@@ -153,6 +94,65 @@ export function createSupplierColumns(
           </Stack>
         );
       },
+    },
+    {
+      field: 'supplierType',
+      headerName: 'Tipo',
+      width: 140,
+      renderCell: (params) => <SupplierTypeChip type={params.value} />,
+      sortable: true,
+    },
+    {
+      field: 'rfc',
+      headerName: 'RFC',
+      width: 150,
+      sortable: true,
+    },
+    {
+      field: 'name',
+      headerName: 'Nombre / Razón Social',
+      flex: 1,
+      minWidth: 200,
+      valueGetter: (_, row) => {
+        if (row.businessName) return row.businessName;
+        return [row.firstName, row.lastName, row.secondLastName]
+          .filter(Boolean)
+          .join(' ');
+      },
+      sortable: false,
+    },
+    {
+      field: 'contactPerson',
+      headerName: 'Contacto',
+      width: 160,
+      sortable: false,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 200,
+      sortable: false,
+    },
+    {
+      field: 'phone',
+      headerName: 'Teléfono',
+      width: 130,
+      sortable: false,
+    },
+    {
+      field: 'status',
+      headerName: 'Estado',
+      width: 110,
+      renderCell: (params) => <StatusChip status={params.value} />,
+      sortable: true,
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Fecha creación',
+      width: 140,
+      type: 'date',
+      valueGetter: (_, row) => new Date(row.createdAt),
+      sortable: true,
     },
   ];
 

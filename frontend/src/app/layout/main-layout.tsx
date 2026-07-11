@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
+  Tooltip,
   Typography,
   Button,
   useMediaQuery,
@@ -20,7 +21,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BusinessIcon from '@mui/icons-material/Business';
 import LogoutIcon from '@mui/icons-material/Logout';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import { useAuthStore } from '../../features/auth/store/auth.store';
+import { useThemeMode } from '../providers/theme-provider';
 
 const DRAWER_WIDTH = 240;
 
@@ -30,6 +34,7 @@ export function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { mode, toggleMode } = useThemeMode();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
@@ -52,7 +57,7 @@ export function MainLayout() {
       </Toolbar>
       <List sx={{ flex: 1, px: 1 }}>
         {navItems.map((item) => (
-            <ListItemButton
+          <ListItemButton
             key={item.path}
             selected={location.pathname === item.path}
             onClick={() => {
@@ -80,9 +85,11 @@ export function MainLayout() {
     <Box sx={{ display: 'flex' }}>
       <AppBar
         position="fixed"
+        color="inherit"
         elevation={0}
         sx={{
           bgcolor: 'background.paper',
+          color: 'text.primary',
           borderBottom: '1px solid',
           borderColor: 'divider',
           zIndex: (t) => t.zIndex.drawer + 1,
@@ -93,7 +100,7 @@ export function MainLayout() {
             <IconButton
               edge="start"
               onClick={() => setMobileOpen(!mobileOpen)}
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, color: 'text.primary' }}
             >
               <MenuIcon />
             </IconButton>
@@ -101,13 +108,25 @@ export function MainLayout() {
           <Typography variant="h6" sx={{ flex: 1, fontWeight: 700, color: 'text.primary' }}>
             Providers App
           </Typography>
+          <Tooltip title={mode === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}>
+            <IconButton
+              onClick={toggleMode}
+              color="inherit"
+              sx={{ mr: { xs: 0.5, sm: 1 }, color: 'text.primary' }}
+            >
+              {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
+          </Tooltip>
           {user && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Box sx={{ textAlign: 'right', display: { xs: 'none', sm: 'block' } }}>
-                <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1.5 } }}>
+              <Box sx={{ textAlign: 'right', display: { xs: 'none', md: 'block' } }}>
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: 600, lineHeight: 1.2, color: 'text.primary' }}
+                >
                   {user.fullName}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                   {user.email}
                 </Typography>
               </Box>
@@ -116,13 +135,27 @@ export function MainLayout() {
                 size="small"
                 color={user.role === 'ADMIN' ? 'primary' : 'default'}
                 variant="outlined"
+                sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
               />
+              <Tooltip title="Cerrar sesión">
+                <IconButton
+                  color="inherit"
+                  onClick={handleLogout}
+                  sx={{ display: { xs: 'inline-flex', sm: 'none' }, color: 'text.primary' }}
+                >
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
               <Button
                 color="inherit"
                 size="small"
                 startIcon={<LogoutIcon />}
                 onClick={handleLogout}
-                sx={{ color: 'text.secondary', textTransform: 'none' }}
+                sx={{
+                  display: { xs: 'none', sm: 'inline-flex' },
+                  color: 'text.secondary',
+                  textTransform: 'none',
+                }}
               >
                 Salir
               </Button>
@@ -163,9 +196,10 @@ export function MainLayout() {
         component="main"
         sx={{
           flex: 1,
+          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
           minHeight: '100vh',
           bgcolor: 'background.default',
-          p: { xs: 2, md: 4 },
+          p: { xs: 1.5, sm: 2, md: 4 },
           mt: 8,
         }}
       >

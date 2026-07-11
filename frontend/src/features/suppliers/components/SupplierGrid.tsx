@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { Box } from '@mui/material';
 import {
   DataGrid,
   type GridRowParams,
@@ -81,40 +82,43 @@ export function SupplierGrid({
   );
 
   return (
-    <DataGrid
-      rows={data}
-      columns={columns}
-      rowCount={total}
-      loading={isLoading}
-      pageSizeOptions={[10, 20, 50, 100]}
-      paginationModel={{ page: page - 1, pageSize: limit }}
-      onPaginationModelChange={(model) => {
-        onLimitChange(model.pageSize);
-        onPageChange(model.page + 1);
-      }}
-      paginationMode="server"
-      sortingMode="server"
-      sortModel={sortModel}
-      onSortModelChange={handleSortModelChange}
-      onRowClick={handleRowClick}
-      disableColumnMenu
-      disableRowSelectionOnClick
-      getRowId={(row) => row.id}
-      localeText={{
-        noRowsLabel: 'No se encontraron proveedores',
-        footerRowSelected: () => '',
-      }}
-      sx={{
-        border: '1px solid',
-        borderColor: 'divider',
-        borderRadius: 2,
-        '& .MuiDataGrid-cell:focus': { outline: 'none' },
-        '& .MuiDataGrid-row': { cursor: 'pointer' },
-        '& .MuiDataGrid-footerContainer': {
-          borderTop: '1px solid',
+    <Box sx={{ width: '100%', overflowX: 'auto' }}>
+      <DataGrid
+        rows={data}
+        columns={columns}
+        rowCount={total}
+        loading={isLoading}
+        pageSizeOptions={[10, 20, 50, 100]}
+        paginationModel={{ page: page - 1, pageSize: limit }}
+        onPaginationModelChange={(model) => {
+          onLimitChange(model.pageSize);
+          onPageChange(model.page + 1);
+        }}
+        paginationMode="server"
+        sortingMode="server"
+        sortModel={sortModel}
+        onSortModelChange={handleSortModelChange}
+        onRowClick={handleRowClick}
+        disableColumnMenu
+        disableRowSelectionOnClick
+        getRowId={(row) => row.id}
+        localeText={{
+          noRowsLabel: 'No se encontraron proveedores',
+          footerRowSelected: () => '',
+        }}
+        sx={{
+          minWidth: 1150,
+          border: '1px solid',
           borderColor: 'divider',
-        },
-      }}
-    />
+          borderRadius: 2,
+          '& .MuiDataGrid-cell:focus': { outline: 'none' },
+          '& .MuiDataGrid-row': { cursor: 'pointer' },
+          '& .MuiDataGrid-footerContainer': {
+            borderTop: '1px solid',
+            borderColor: 'divider',
+          },
+        }}
+      />
+    </Box>
   );
 }

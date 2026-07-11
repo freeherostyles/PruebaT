@@ -40,7 +40,7 @@ export function SupplierToolbar({
     >
       <SearchBar value={search} onChange={onSearch} />
 
-      <FormControl size="small" sx={{ minWidth: 150 }}>
+      <FormControl size="small" sx={{ minWidth: 150, width: { xs: '100%', md: 'auto' } }}>
         <InputLabel id="type-label">Tipo</InputLabel>
         <Select
           labelId="type-label"
@@ -54,7 +54,7 @@ export function SupplierToolbar({
         </Select>
       </FormControl>
 
-      <FormControl size="small" sx={{ minWidth: 140 }}>
+      <FormControl size="small" sx={{ minWidth: 140, width: { xs: '100%', md: 'auto' } }}>
         <InputLabel id="status-label">Estado</InputLabel>
         <Select
           labelId="status-label"
@@ -68,7 +68,7 @@ export function SupplierToolbar({
         </Select>
       </FormControl>
 
-      <FormControl size="small" sx={{ minWidth: 130 }}>
+      <FormControl size="small" sx={{ minWidth: 130, width: { xs: '100%', md: 'auto' } }}>
         <InputLabel id="sortby-label">Orden</InputLabel>
         <Select
           labelId="sortby-label"
@@ -81,7 +81,7 @@ export function SupplierToolbar({
         </Select>
       </FormControl>
 
-      <FormControl size="small" sx={{ minWidth: 100 }}>
+      <FormControl size="small" sx={{ minWidth: 100, width: { xs: '100%', md: 'auto' } }}>
         <Select
           value={sortOrder}
           onChange={(e) => onSortOrderChange(e.target.value as 'ASC' | 'DESC')}
@@ -97,7 +97,7 @@ export function SupplierToolbar({
           size="small"
           startIcon={<FilterListIcon />}
           onClick={onReset}
-          sx={{ textTransform: 'none' }}
+          sx={{ textTransform: 'none', alignSelf: { xs: 'stretch', md: 'auto' } }}
         >
           Limpiar
         </Button>

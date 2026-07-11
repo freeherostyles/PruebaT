@@ -45,7 +45,7 @@ export function SearchBar({
           ),
         },
       }}
-      sx={{ minWidth: 280 }}
+      sx={{ minWidth: { md: 280 }, width: '100%' }}
     />
   );
 }

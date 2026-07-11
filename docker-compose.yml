@@ -47,6 +47,10 @@ services:
       CHOKIDAR_USEPOLLING: 'true'
     ports:
       - '3187:3187'
+    command:
+      - sh
+      - -c
+      - npm run migration:run && npm run seed:users && npm run seed:suppliers && npm run start:dev
     volumes:
       - ./backend:/app
       - providers-backend-node-modules:/app/node_modules

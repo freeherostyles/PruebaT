@@ -1,5 +1,12 @@
 import { useState, useCallback } from 'react';
-import { Container, Stack, Typography, Button } from '@mui/material';
+import {
+  Container,
+  Stack,
+  Typography,
+  Button,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useSupplierStats } from '../hooks/use-supplier-stats';
 import { useSupplierList } from '../hooks/use-supplier-list';
@@ -11,6 +18,7 @@ import { useAuthStore } from '../../auth/store/auth.store';
 import { SupplierStatsCards } from '../components/SupplierStatsCards';
 import { SupplierToolbar } from '../components/SupplierToolbar';
 import { SupplierGrid } from '../components/SupplierGrid';
+import { SupplierMobileList } from '../components/SupplierMobileList';
 import { SupplierDetailDialog } from '../dialogs/supplier-detail-dialog';
 import { CreateSupplierDialog } from '../dialogs/CreateSupplierDialog';
 import { EditSupplierDialog } from '../dialogs/EditSupplierDialog';
@@ -20,6 +28,8 @@ import { ErrorState } from '../components/ErrorState';
 import type { SupplierStatus } from '../types/supplier';
 
 export function SuppliersPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.role === 'ADMIN';
   const { filters, hasActiveFilters, setFilter, resetFilters, handleSearch } =
@@ -128,25 +138,42 @@ export function SuppliersPage() {
             }
           />
         ) : (
-          <SupplierGrid
-            data={listQuery.data?.data ?? []}
-            total={listQuery.data?.meta.total ?? 0}
-            page={filters.page}
-            limit={filters.limit}
-            sortBy={filters.sortBy}
-            sortOrder={filters.sortOrder}
-            isLoading={listQuery.isLoading || listQuery.isPlaceholderData}
-            onPageChange={(p) => setFilter('page', p)}
-            onLimitChange={(l) => setFilter('limit', l)}
-            onSortChange={(sb, so) => {
-              setFilter('sortBy', sb);
-              setFilter('sortOrder', so);
-            }}
-            onRowClick={(id) => openDetail(id)}
-            onEdit={handleEdit}
-            onDelete={handleDeleteRequest}
-            onToggleStatus={handleToggleStatus}
-          />
+          isMobile ? (
+            <SupplierMobileList
+              data={listQuery.data?.data ?? []}
+              total={listQuery.data?.meta.total ?? 0}
+              totalPages={listQuery.data?.meta.totalPages ?? 0}
+              page={filters.page}
+              limit={filters.limit}
+              isAdmin={isAdmin}
+              onPageChange={(p) => setFilter('page', p)}
+              onLimitChange={(l) => setFilter('limit', l)}
+              onView={(id) => openDetail(id)}
+              onEdit={handleEdit}
+              onDelete={handleDeleteRequest}
+              onToggleStatus={handleToggleStatus}
+            />
+          ) : (
+            <SupplierGrid
+              data={listQuery.data?.data ?? []}
+              total={listQuery.data?.meta.total ?? 0}
+              page={filters.page}
+              limit={filters.limit}
+              sortBy={filters.sortBy}
+              sortOrder={filters.sortOrder}
+              isLoading={listQuery.isLoading || listQuery.isPlaceholderData}
+              onPageChange={(p) => setFilter('page', p)}
+              onLimitChange={(l) => setFilter('limit', l)}
+              onSortChange={(sb, so) => {
+                setFilter('sortBy', sb);
+                setFilter('sortOrder', so);
+              }}
+              onRowClick={(id) => openDetail(id)}
+              onEdit={handleEdit}
+              onDelete={handleDeleteRequest}
+              onToggleStatus={handleToggleStatus}
+            />
+          )
         )}
       </Stack>
 
