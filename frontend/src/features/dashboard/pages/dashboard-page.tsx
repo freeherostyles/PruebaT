@@ -9,6 +9,7 @@ import {
   Typography,
   Alert,
   Button,
+  useTheme,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import PeopleIcon from '@mui/icons-material/People';
@@ -60,8 +61,17 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
 }
 
 export function DashboardPage() {
+  const theme = useTheme();
   const { data, isLoading, isError, error, refetch, isFetching } = useSupplierStats();
   const user = useAuthStore((s) => s.user);
+
+  const statCards = [
+    { title: 'Total', value: data?.total ?? 0, icon: <PeopleIcon />, color: theme.palette.primary.main },
+    { title: 'Activos', value: data?.active ?? 0, icon: <CheckCircleIcon />, color: theme.palette.success.main },
+    { title: 'Inactivos', value: data?.inactive ?? 0, icon: <CancelIcon />, color: theme.palette.error.main },
+    { title: 'Personas físicas', value: data?.personaFisica ?? 0, icon: <PersonIcon />, color: theme.palette.warning.main },
+    { title: 'Personas morales', value: data?.personaMoral ?? 0, icon: <BusinessIcon />, color: theme.palette.secondary.main },
+  ];
 
   return (
     <Container maxWidth="lg" disableGutters>
@@ -125,46 +135,16 @@ export function DashboardPage() {
 
         {data && data.total > 0 && (
           <Grid container spacing={2.5}>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StatCard
-                title="Total"
-                value={data.total}
-                icon={<PeopleIcon />}
-                color="#1d4ed8"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StatCard
-                title="Activos"
-                value={data.active}
-                icon={<CheckCircleIcon />}
-                color="#16a34a"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StatCard
-                title="Inactivos"
-                value={data.inactive}
-                icon={<CancelIcon />}
-                color="#dc2626"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StatCard
-                title="Personas físicas"
-                value={data.personaFisica}
-                icon={<PersonIcon />}
-                color="#ca8a04"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StatCard
-                title="Personas morales"
-                value={data.personaMoral}
-                icon={<BusinessIcon />}
-                color="#7c3aed"
-              />
-            </Grid>
+            {statCards.map((card) => (
+              <Grid key={card.title} size={{ xs: 12, sm: 6, md: 4 }}>
+                <StatCard
+                  title={card.title}
+                  value={card.value}
+                  icon={card.icon}
+                  color={card.color}
+                />
+              </Grid>
+            ))}
           </Grid>
         )}
       </Stack>

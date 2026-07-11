@@ -15,6 +15,7 @@ import { SupplierDetailDialog } from '../dialogs/supplier-detail-dialog';
 import { CreateSupplierDialog } from '../dialogs/CreateSupplierDialog';
 import { EditSupplierDialog } from '../dialogs/EditSupplierDialog';
 import { ConfirmDialog } from '../../../shared/components/ConfirmDialog';
+import { EmptyState } from '../../../shared/components/EmptyState';
 import { ErrorState } from '../components/ErrorState';
 import type { SupplierStatus } from '../types/supplier';
 
@@ -118,6 +119,14 @@ export function SuppliersPage() {
             message="No se pudieron cargar los proveedores"
             onRetry={() => listQuery.refetch()}
           />
+        ) : listQuery.data?.data.length === 0 ? (
+          <EmptyState
+            message={
+              hasActiveFilters
+                ? 'No se encontraron proveedores con los filtros actuales'
+                : 'No hay proveedores registrados todavía'
+            }
+          />
         ) : (
           <SupplierGrid
             data={listQuery.data?.data ?? []}
@@ -181,6 +190,7 @@ export function SuppliersPage() {
         }
         confirmLabel={statusTarget?.status === 'ACTIVE' ? 'Activar' : 'Desactivar'}
         cancelLabel="Cancelar"
+        severity={statusTarget?.status === 'ACTIVE' ? 'info' : 'error'}
         loading={statusMutation.isPending}
         onConfirm={handleConfirmStatus}
         onCancel={() => setStatusTarget(null)}

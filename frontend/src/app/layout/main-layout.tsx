@@ -4,7 +4,6 @@ import {
   AppBar,
   Box,
   Chip,
-  CssBaseline,
   Drawer,
   IconButton,
   List,
@@ -79,7 +78,6 @@ export function MainLayout() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
       <AppBar
         position="fixed"
         elevation={0}

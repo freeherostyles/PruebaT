@@ -27,6 +27,7 @@ export function ConfirmDialog({
   description,
   confirmLabel = 'Confirmar',
   cancelLabel = 'Cancelar',
+  severity = 'error',
   loading = false,
   onConfirm,
   onCancel,
@@ -44,7 +45,7 @@ export function ConfirmDialog({
         <Button
           onClick={onConfirm}
           variant="contained"
-          color="error"
+          color={severity}
           disabled={loading}
           startIcon={loading ? <CircularProgress size={16} /> : undefined}
           sx={{ textTransform: 'none' }}

@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, Skeleton, Stack, Typography, useTheme } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -62,17 +62,19 @@ function StatCardSkeleton() {
   );
 }
 
+type StatColor = 'primary' | 'success' | 'error' | 'warning' | 'secondary';
+
 const STATS_CONFIG: {
   key: keyof SupplierStats;
   title: string;
   icon: React.ReactNode;
-  color: string;
+  colorKey: StatColor;
 }[] = [
-  { key: 'total', title: 'Total', icon: <PeopleIcon />, color: '#1d4ed8' },
-  { key: 'active', title: 'Activos', icon: <CheckCircleIcon />, color: '#16a34a' },
-  { key: 'inactive', title: 'Inactivos', icon: <CancelIcon />, color: '#dc2626' },
-  { key: 'personaFisica', title: 'Personas físicas', icon: <PersonIcon />, color: '#ca8a04' },
-  { key: 'personaMoral', title: 'Personas morales', icon: <BusinessIcon />, color: '#7c3aed' },
+  { key: 'total', title: 'Total', icon: <PeopleIcon />, colorKey: 'primary' },
+  { key: 'active', title: 'Activos', icon: <CheckCircleIcon />, colorKey: 'success' },
+  { key: 'inactive', title: 'Inactivos', icon: <CancelIcon />, colorKey: 'error' },
+  { key: 'personaFisica', title: 'Personas físicas', icon: <PersonIcon />, colorKey: 'warning' },
+  { key: 'personaMoral', title: 'Personas morales', icon: <BusinessIcon />, colorKey: 'secondary' },
 ];
 
 interface SupplierStatsCardsProps {
@@ -81,6 +83,12 @@ interface SupplierStatsCardsProps {
 }
 
 export function SupplierStatsCards({ data, isLoading }: SupplierStatsCardsProps) {
+  const theme = useTheme();
+
+  const resolveColor = (colorKey: StatColor): string => {
+    return theme.palette[colorKey].main;
+  };
+
   if (isLoading) {
     return (
       <Grid container spacing={2.5}>
@@ -103,7 +111,7 @@ export function SupplierStatsCards({ data, isLoading }: SupplierStatsCardsProps)
             title={stat.title}
             value={data[stat.key]}
             icon={stat.icon}
-            color={stat.color}
+            color={resolveColor(stat.colorKey)}
           />
         </Grid>
       ))}

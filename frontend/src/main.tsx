@@ -5,6 +5,7 @@ import { SnackbarProvider } from 'notistack';
 import { QueryProvider } from './app/providers/query-provider';
 import { ThemeProvider } from './app/providers/theme-provider';
 import { AppRouter } from './app/router';
+import { ErrorBoundary } from './features/suppliers/components/ErrorBoundary';
 import './styles/global.css';
 
 createRoot(document.getElementById('root')!).render(
@@ -16,7 +17,9 @@ createRoot(document.getElementById('root')!).render(
       >
         <QueryProvider>
           <BrowserRouter>
-            <AppRouter />
+            <ErrorBoundary>
+              <AppRouter />
+            </ErrorBoundary>
           </BrowserRouter>
         </QueryProvider>
       </SnackbarProvider>
